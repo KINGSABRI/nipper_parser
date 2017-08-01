@@ -22,6 +22,7 @@ module NipperParser
   #   pp nipper_parser.security_audit.findings[0].title
   #   pp nipper_parser.security_audit.findings[0].impact
   #   pp nipper_parser.security_audit.conclusions
+  #   pp nipper_parser.security_audit.conclusions.per_device
   #   pp nipper_parser.security_audit.recommendations.list
   #   pp nipper_parser.security_audit.mitigation_classification
   #
@@ -60,6 +61,7 @@ if __FILE__ == $0
   pp nipper_parser.security_audit.findings[0].title
   pp nipper_parser.security_audit.findings[0].impact
   pp nipper_parser.security_audit.conclusions
+  pp nipper_parser.security_audit.conclusions.per_device
   pp nipper_parser.security_audit.recommendations.list
   pp nipper_parser.security_audit.mitigation_classification
 end
