@@ -52,7 +52,7 @@ module NipperParser
             attributes(cve).index,
             attributes(cve).title,
             attributes(cve).ref,
-            :rating,                                            # FIXME
+            cve.elements[0],                                            # FIXME
             cve.elements[1].elements.text,                      # summary
             cve.elements[2].elements[1].elements.map(&:text),   # affect_devices
             cve.elements[3].elements[1].elements.map(&:text),   # vendor_sec_advisories
