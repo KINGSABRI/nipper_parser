@@ -2,7 +2,7 @@ module NipperParser
   class Information
     # include ParserUtils
 
-    # Information parses the 'Information' section
+    # Information parses the 'Information' part
     #
     # @example Basic Usage
     #   require 'nokogiri'
@@ -61,5 +61,5 @@ if __FILE__ == $0
   pp information.date
   pp information.version
   pp information.devices
-  # pp information.devices[0].name
+  pp information.devices[0].name
 end
