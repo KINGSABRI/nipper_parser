@@ -2,7 +2,13 @@ require 'date'
 
 module NipperParser
 
-  # SecurityAudit parses the 'Security Audit' section 
+  # SecurityAudit parses the 'Security Audit' part including all it's sections.
+  #   Security Audit part contains the following sections:
+  #     - introduction
+  #     - findings
+  #     - Conclusions
+  #     - Recommendations
+  #     - Mitigation Classification
   #
   # @example Basic Usage
   #   require 'nokogiri'
@@ -57,7 +63,6 @@ module NipperParser
         :index, :title, :ref,
         :per_device, :per_rating
     )
-
 
     attr_reader :config, :title
 
