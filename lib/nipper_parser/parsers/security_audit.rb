@@ -72,12 +72,6 @@ module NipperParser
       title     = attributes(intro).title
       reference = attributes(intro).ref
       date      = Date.parse(intro.elements[0].text).to_s
-      # devices   = intro.elements[1].elements[1].elements.map do |device|
-      #   { device: device.elements[0].text,
-      #     name: device.elements[1].text,
-      #     os: device.elements[2].text
-      #   }
-      # end
       devices = generate_table(intro.elements[1].elements)
       security_issue_overview = intro.elements[2].elements[1..4].map do |issue|
         {issue['title'] => issue.text}
@@ -119,13 +113,6 @@ module NipperParser
       index     = attributes(conc).index
       title     = attributes(conc).title
       reference = attributes(conc).ref
-      # per_device = conc.elements[1].elements[1].elements.map do |device|
-      #   { device: device.elements[0].text,
-      #     name: device.elements[1].text,
-      #     issues: device.elements[2].text,
-      #     highest_rating: device.elements[3].text
-      #   }
-      # end
       per_device = generate_table(conc.elements[1].elements)
       per_rating = {
           critical: conc.elements[3].elements.map(&:text),
@@ -180,21 +167,21 @@ if __FILE__ == $0
   require_relative 'parser_utils'
   config = Nokogiri::XML open(ARGV[0])
   security_audit = NipperParser::SecurityAudit.new(config)
-  # pp security_audit.introduction.index
-  # pp security_audit.introduction.title
-  # pp security_audit.introduction.ref
-  # pp security_audit.introduction.devices
-  # finding = security_audit.findings[1]
-  # pp finding.index
-  # pp finding.title
-  # pp finding.ref
-  # pp finding.affected_devices
-  # pp finding.finding
-  # pp finding.impact
-  # pp finding.recommendation
-  # pp security_audit.introduction
-  # pp security_audit.conclusions
-  # pp security_audit.conclusions.per_device
-  # pp security_audit.conclusions.list_critical
-  # pp security_audit.recommendations.list
+  pp security_audit.introduction.index
+  pp security_audit.introduction.title
+  pp security_audit.introduction.ref
+  pp security_audit.introduction.devices
+  finding = security_audit.findings[1]
+  pp finding.index
+  pp finding.title
+  pp finding.ref
+  pp finding.affected_devices
+  pp finding.finding
+  pp finding.impact
+  pp finding.recommendation
+  pp security_audit.introduction
+  pp security_audit.conclusions
+  pp security_audit.conclusions.per_device
+  pp security_audit.conclusions.list_critical
+  pp security_audit.recommendations.list
 end
