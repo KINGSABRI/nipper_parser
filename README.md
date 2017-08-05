@@ -30,7 +30,7 @@ gem install nipper_parser
 
 basic report information 
 ```ruby
-nipper_parser = NipperPareser::Config.open('network-devices.xml') 
+nipper_parser = NipperParser::Config.open('network-devices.xml') 
 puts nipper_parser.information.title
 puts nipper_parser.information.author
 puts nipper_parser.information.date
