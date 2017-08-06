@@ -26,7 +26,7 @@ NipperParser gem is an unofficial parser for [Titania Nipper Studio](https://www
 | Appendix               |           |
  
 
-## Installation
+## Installation (not published yet)
 
 ```ruby
 gem install nipper_parser
