@@ -7,7 +7,7 @@ module NipperParser
     # @param elements [Nokogiri::XML::Element]
     # @return [Hash]
     def generate_table(elements)
-      headers = elements[0].elements.map{|header| header.text.downcase.gsub(' ', '_').to_sym}
+      headers = elements[0].elements.map{|header| header.text.downcase.tr(' ', '_').to_sym}
       body    = elements[1].elements.map{|e1| e1.elements.map{|e2| e2.text}}
 
       body.map{|element| headers.zip(element).to_h}
