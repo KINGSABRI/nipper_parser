@@ -32,7 +32,16 @@ module NipperParser
   #   pp security_audit.conclusions.per_device
   #   pp security_audit.conclusions.list_critical
   #   pp security_audit.recommendations.list
-  # 
+  #   # pp security_audit.mitigation_classification
+  #   pp security_audit.mitigation_classification.list_by.fixing[:involved]
+  #   pp security_audit.mitigation_classification.list_by.fixing[:involved][0].rating[:rating]
+  #   pp security_audit.mitigation_classification.list_by.rating[:high]
+  #   pp security_audit.mitigation_classification.list_by.rating[:high][0].rating[:fix]
+  #   pp security_audit.mitigation_classification.statistics
+  #   pp security_audit.mitigation_classification.statistics.critical
+  #   pp security_audit.mitigation_classification.statistics.quick
+  #   pp security_audit.mitigation_classification.statistics.report
+  #
   # @param config [Nokogiri::XML] parsed XML
   # @attr_reader title the report title
   # @attr_reader config a parsed XML [Nokogiri::XML] object
@@ -61,7 +70,23 @@ module NipperParser
     )
     MitigationClassification = Struct.new(
         :index, :title, :ref,
-        :per_device, :per_rating
+        :list_by, :statistics
+    )
+    ListBy = Struct.new(
+         :fixing,
+         :rating, :all
+    )
+    Statistics = Struct.new(
+         :findings,
+         :critical,
+         :high,
+         :medium,
+         :low,
+         :informational,
+         :quick,
+         :planned,
+         :involved,
+         :report
     )
 
     attr_reader :config, :title
@@ -69,21 +94,22 @@ module NipperParser
     def initialize(config)
       @config = config.xpath("//report/part[@ref='SECURITYAUDIT']")[0].elements
       @title  = @config[0].elements[1].attributes['title'].text
+      introduction
+      findings
     end
 
     def introduction
       intro = @config[0]
       index     = attributes(intro).index
       title     = attributes(intro).title
-      reference = attributes(intro).ref
+      reference = attributes(intro).ref.to_i
       date      = Date.parse(intro.elements[0].text).to_s
-      devices = generate_table(intro.elements[1].elements)
-      security_issue_overview = intro.elements[2].elements[1..4].map do |issue|
-        {issue['title'] => issue.text}
+      devices   = generate_table(intro.elements[1].elements)
+      security_issue_overview = {}
+      intro.elements[2].elements[1..4].map do |issue|
+        security_issue_overview[issue['title']] = issue.text
       end
-      rating    = intro.elements[3].elements[2].elements[1].map do |rate|
-        {rate.elements[0].text => rate.elements[1].text}
-      end
+      rating    = generate_table(intro.elements[3].elements[2].elements[1].elements)
 
       Introduction.new(
           index, title, reference, date, devices,
@@ -92,19 +118,20 @@ module NipperParser
     end
 
     # Parse findings from given configurations
+    # @return [Array<Finding>]
     def findings
       findings = @config.to_a.clone
       findings.shift  # pop first item, the introduction
       findings.pop(3) # pop last 3 item, conclusion, recommendations, Mitigation Classification
 
-      findings.map do |finding|
+      @findings = findings.map do |finding|
         Finding.new(
-            attributes(finding).index,
+            attributes(finding).index.to_f,
             attributes(finding).title,
             attributes(finding).ref,
             finding.elements[0].elements[0].elements.map(&:attributes),            # affected_devices
-            finding.elements[0].elements[1].elements.map{|r| {r.name => r.text}},  # rating
-            finding.elements[2].elements.first(2).map(&:text),                     # finding
+            rating_table(finding.elements[0].elements[1].elements),
+            finding.elements[2].elements.first(2).map(&:text).join("\n"),         # finding
             finding.elements[3].elements.text,                                     # impact
             finding.elements[4].elements.text,                                     # ease
             finding.elements[5].elements.text                                      # recommendation
@@ -115,7 +142,7 @@ module NipperParser
     # Conclusions
     def conclusions
       conc = @config[-3]
-      index     = attributes(conc).index
+      index     = attributes(conc).index.to_f
       title     = attributes(conc).title
       reference = attributes(conc).ref
       per_device = generate_table(conc.elements[1].elements)
@@ -136,8 +163,9 @@ module NipperParser
 
     # Recommendations
     def recommendations
-      recom = @config[-2]
-      index     = attributes(recom).index
+      # recom = @config[-2]
+      recom = @config.search("section[@ref='SECURITY.RECOMMENDATIONS']")[0]
+      index     = attributes(recom).index.to_f
       title     = attributes(recom).title
       reference = attributes(recom).ref
       list      = generate_table(recom.elements[1].elements)
@@ -148,19 +176,97 @@ module NipperParser
       )
     end
 
-    # TODO: implement
     def mitigation_classification
-      mitigation = @config[-1]
-      index     = attributes(mitigation).index
-      title     = attributes(mitigation).title
-      reference = attributes(mitigation).ref
+      @mitigation = @config.search("section[@ref='SECURITY.MITIGATIONS']")[0]  # @config[-1]
 
+      index     = attributes(@mitigation).index
+      title     = attributes(@mitigation).title
+      reference = attributes(@mitigation).ref
       MitigationClassification.new(
           index, title, reference,
+          list_by,
+          statistics
       )
 
     end
 
+    private
+    # list_by list different type of mitigation, by fixing type, and by rating type.
+    #
+    # @example:
+    #   list_by.fixing              #=> [Hash]
+    #   list_by.fixing[:quick]      #=> [Array<Findings>]
+    #   list_by.rating              #=> [Hash]
+    #   list_by.rating[:critical]   #=> [Array<Findings>]
+    #   list_by.all                 #=> [Hash]
+    #
+    # @return [ListBy]
+    def list_by
+      @fixing_lists = @mitigation.search('list')
+      _by_fixing  = by_fixing
+      _by_rating  = by_rating
+      fixing      = {quick: _by_fixing[0], planned: _by_fixing[1], involved: _by_fixing[2]}
+      rating      = {critical: _by_rating[:critical], high: _by_rating[:high],
+                     medium: _by_rating[:medium], low: _by_rating[:low],
+                     informational: _by_rating[:informational]}
+      _by_all     = {fixing: fixing, rating: rating}
+
+      ListBy.new(
+        _by_all[:fixing],
+        _by_all[:rating],
+        _by_all
+      )
+    end
+
+    # finding_objects maps finding listitems text with the findings object
+    def by_fixing
+      findings = @findings.dup
+      @fixing_lists.map do |_class|
+        _class.search('listitem').map do |item|
+          # if finding reference = item mentioned index (extracted from text), then return the finding object
+          findings.select{|finding| finding.index == item.text.match(/\d+\.\d+/).to_s.to_f}[0]
+        end
+      end
+    end
+
+    # search in all finding by rating
+    def by_rating
+      findings = @findings.dup
+      rating = {critical: nil, high: nil, medium: nil, low: nil, informational: nil}
+      rating.keys.each do |rate|
+        rating[rate] = findings.select {|finding| finding.rating[:rating].downcase == rate.to_s}
+      end
+
+      rating
+    end
+
+    # mitigation statistics
+    def statistics
+      findings = @findings.size
+      ratings = {critical: nil, high: nil, medium: nil, low: nil, informational: nil}
+      ratings.keys.each do |rating|
+        ratings[rating] = {total: list_by.rating[rating].size,
+                           perce: ( (list_by.rating[rating].size/@findings.size.to_f) * 100.0 ).round(2)}
+      end
+      fixing = {quick: nil, involved: nil, planned: nil}
+      fixing.keys.each do |fix|
+        fixing[fix] = {total: list_by.fixing[fix].size,
+                       perce: ( (list_by.fixing[fix].size/@findings.size.to_f) * 100.0 ).round(2)}
+      end
+      report   = {ratings: ratings, fixing: fixing}
+      Statistics.new(
+          findings,
+          ratings[:critical],
+          ratings[:high],
+          ratings[:medium],
+          ratings[:low],
+          ratings[:informational],
+          fixing[:quick],
+          fixing[:involved],
+          fixing[:planned],
+          report
+      )
+    end
   end
 end
 
@@ -174,11 +280,15 @@ if __FILE__ == $0
   security_audit = NipperParser::SecurityAudit.new(config)
   pp security_audit.introduction.index
   pp security_audit.introduction.title
+  pp security_audit.introduction.rating
+  pp security_audit.introduction.security_issue_overview
   pp security_audit.introduction.ref
   pp security_audit.introduction.devices
-  finding = security_audit.findings[1]
+  finding = security_audit.findings[0]
+  pp finding
   pp finding.index
   pp finding.title
+  pp finding.rating
   pp finding.ref
   pp finding.affected_devices
   pp finding.finding
@@ -189,4 +299,12 @@ if __FILE__ == $0
   pp security_audit.conclusions.per_device
   pp security_audit.conclusions.list_critical
   pp security_audit.recommendations.list
+  pp security_audit.mitigation_classification
+  pp security_audit.mitigation_classification.list_by.fixing[:involved]
+  pp security_audit.mitigation_classification.list_by.fixing[:involved][0].rating[:rating]
+  pp security_audit.mitigation_classification.list_by.rating[:high]
+  pp security_audit.mitigation_classification.list_by.rating[:high][0].rating[:fix]
+  pp security_audit.mitigation_classification.statistics.findings
+  pp security_audit.mitigation_classification.statistics
+  pp security_audit.mitigation_classification.statistics.report
 end
