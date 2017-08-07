@@ -82,6 +82,7 @@ pp security_audit.mitigation_classification.statistics.findings
 pp security_audit.mitigation_classification.statistics.report
 ```
 
+Download a dummy XML report to test the library from [**here**](https://gist.github.com/KINGSABRI/3dfcb821ea29f918f74c8e1979c5a71f).
 
 ## Contributing
 
