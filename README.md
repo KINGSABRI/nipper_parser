@@ -33,23 +33,53 @@ gem install nipper_parser
 ```
 ## Usage
 
-basic report information 
+##### Report information
 ```ruby
 nipper_parser = NipperParser::Config.open('network-devices.xml') 
 puts nipper_parser.information.title
 puts nipper_parser.information.author
 puts nipper_parser.information.date
-puts nipper_parser.information.devices
-
+puts nipper_parser.information.devices 
+```
+##### Dealing with Security Audit 
+```ruby
+nipper_parser = NipperParser::Config.open('network-devices.xml') 
 pp nipper_parser.security_audit
 pp nipper_parser.security_audit.findings
-pp nipper_parser.security_audit.findings[0]
-pp nipper_parser.security_audit.findings[0].title
-pp nipper_parser.security_audit.findings[0].impact
-pp nipper_parser.security_audit.conclusions
-pp nipper_parser.security_audit.recommendations.list
-pp nipper_parser.security_audit.mitigation_classification
- 
+finding = security_audit.findings[0]              # Play wit a finding
+pp finding
+pp finding.index
+pp finding.title
+pp finding.rating
+pp finding.ref
+pp finding.affected_devices
+pp finding.finding
+pp finding.impact
+pp finding.recommendation
+```
+
+##### Report Summaries 
+```ruby
+nipper_parser = NipperParser::Config.open('network-devices.xml') 
+pp security_audit.introduction
+pp security_audit.introduction.title
+pp security_audit.introduction.date
+pp security_audit.introduction.security_issue_overview
+
+pp security_audit.conclusions
+pp security_audit.conclusions.per_device
+pp security_audit.conclusions.list_critical
+
+pp security_audit.recommendations.list
+
+pp security_audit.mitigation_classification
+pp security_audit.mitigation_classification.list_by.fixing[:involved]
+pp security_audit.mitigation_classification.list_by.fixing[:involved][0].rating[:rating]
+pp security_audit.mitigation_classification.list_by.rating[:high]
+pp security_audit.mitigation_classification.list_by.rating[:high][0].rating[:fix]
+pp security_audit.mitigation_classification.statistics
+pp security_audit.mitigation_classification.statistics.findings
+pp security_audit.mitigation_classification.statistics.report
 ```
 
 
