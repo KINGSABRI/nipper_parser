@@ -1,5 +1,5 @@
 require 'date'
-
+require_relative 'parser_utils'
 module NipperParser
 
   # SecurityAudit parses the 'Security Audit' part including all it's sections.
@@ -15,11 +15,13 @@ module NipperParser
   #   require 'pp'
   #   config = Nokogiri::XML open(ARGV[0])
   #   security_audit = NipperParser::SecurityAudit.new(config)
+  #   pp security_audit.introduction.class
   #   pp security_audit.introduction.index
   #   pp security_audit.introduction.title
   #   pp security_audit.introduction.devices
   # @example Dealing with findings
-  #   finding = security_audit.findings[1]
+  #   finding = security_audit.findings[0]
+  #   pp finding.class
   #   pp finding.index
   #   pp finding.title
   #   pp finding.ref
@@ -28,16 +30,17 @@ module NipperParser
   #   pp finding.impact
   #   pp finding.recommendation
   # @example Dealing with report summaries
-  #   pp security_audit.conclusions
+  #   pp security_audit.conclusions.class
   #   pp security_audit.conclusions.per_device
   #   pp security_audit.conclusions.list_critical
+  #   pp security_audit.recommendations.class
   #   pp security_audit.recommendations.list
-  #   # pp security_audit.mitigation_classification
+  #   pp security_audit.mitigation_classification.class
   #   pp security_audit.mitigation_classification.list_by.fixing[:involved]
   #   pp security_audit.mitigation_classification.list_by.fixing[:involved][0].rating[:rating]
   #   pp security_audit.mitigation_classification.list_by.rating[:high]
   #   pp security_audit.mitigation_classification.list_by.rating[:high][0].rating[:fix]
-  #   pp security_audit.mitigation_classification.statistics
+  #   pp security_audit.mitigation_classification.statistics.class
   #   pp security_audit.mitigation_classification.statistics.critical
   #   pp security_audit.mitigation_classification.statistics.quick
   #   pp security_audit.mitigation_classification.statistics.report
@@ -49,8 +52,11 @@ module NipperParser
     include ParserUtils
 
     # Skeleton for SecurityAudit parts
+
     Introduction = Struct.new(
-        :index, :title, :ref, :date, :devices,
+        # introduction's index
+        :index,
+        :title, :ref, :date, :devices,
         :security_issue_overview, :rating
     )
     Finding = Struct.new(
@@ -90,7 +96,7 @@ module NipperParser
     )
 
     attr_reader :config, :title
-
+    # @param config [Nokogiri::XML::Document]
     def initialize(config)
       @config = config.xpath("//report/part[@ref='SECURITYAUDIT']")[0].elements
       @title  = @config[0].elements[1].attributes['title'].text
@@ -98,6 +104,7 @@ module NipperParser
       findings
     end
 
+    # Introduction of the Security Audit report
     def introduction
       intro = @config[0]
       index     = attributes(intro).index
@@ -130,7 +137,7 @@ module NipperParser
             attributes(finding).title,
             attributes(finding).ref,
             finding.elements[0].elements[0].elements.map(&:attributes),            # affected_devices
-            rating_table(finding.elements[0].elements[1].elements),
+            rating_table(finding.elements[0].elements[1].elements),        # Rating table
             finding.elements[2].elements.first(2).map(&:text).join("\n"),         # finding
             finding.elements[3].elements.text,                                     # impact
             finding.elements[4].elements.text,                                     # ease
@@ -141,7 +148,7 @@ module NipperParser
 
     # Conclusions
     def conclusions
-      conc = @config[-3]
+      conc = @config.search("section[@ref='SECURITY.CONCLUSIONS']")[0]
       index     = attributes(conc).index.to_f
       title     = attributes(conc).title
       reference = attributes(conc).ref
@@ -163,7 +170,6 @@ module NipperParser
 
     # Recommendations
     def recommendations
-      # recom = @config[-2]
       recom = @config.search("section[@ref='SECURITY.RECOMMENDATIONS']")[0]
       index     = attributes(recom).index.to_f
       title     = attributes(recom).title
@@ -194,17 +200,17 @@ module NipperParser
     # list_by list different type of mitigation, by fixing type, and by rating type.
     #
     # @example:
-    #   list_by.fixing              #=> [Hash]
-    #   list_by.fixing[:quick]      #=> [Array<Findings>]
-    #   list_by.rating              #=> [Hash]
-    #   list_by.rating[:critical]   #=> [Array<Findings>]
-    #   list_by.all                 #=> [Hash]
+    #   list_by.fixing              # @return [Hash]
+    #   list_by.fixing[:quick]      # @return [Array<Findings>]
+    #   list_by.rating              # @return [Hash]
+    #   list_by.rating[:critical]   # @return [Array<Findings>]
+    #   list_by.all                 # @return [Hash]
     #
     # @return [ListBy]
     def list_by
       @fixing_lists = @mitigation.search('list')
-      _by_fixing  = by_fixing
-      _by_rating  = by_rating
+      _by_fixing  = by_fixing   # @see by_fixing
+      _by_rating  = by_rating   # @see by_rating
       fixing      = {quick: _by_fixing[0], planned: _by_fixing[1], involved: _by_fixing[2]}
       rating      = {critical: _by_rating[:critical], high: _by_rating[:high],
                      medium: _by_rating[:medium], low: _by_rating[:low],
@@ -223,7 +229,8 @@ module NipperParser
       findings = @findings.dup
       @fixing_lists.map do |_class|
         _class.search('listitem').map do |item|
-          # if finding reference = item mentioned index (extracted from text), then return the finding object
+          # if 'finding' reference = item mentioned index (extracted from text 'See section' ),
+          # then return the finding object
           findings.select{|finding| finding.index == item.text.match(/\d+\.\d+/).to_s.to_f}[0]
         end
       end
@@ -240,7 +247,11 @@ module NipperParser
       rating
     end
 
-    # mitigation statistics
+    # mitigation statistics regarding to number of:
+    #  - findings
+    #  - findings by rating
+    #  - findings by fixing
+    # @return [Statistics]
     def statistics
       findings = @findings.size
       ratings = {critical: nil, high: nil, medium: nil, low: nil, informational: nil}
@@ -278,6 +289,7 @@ if __FILE__ == $0
   require_relative 'parser_utils'
   config = Nokogiri::XML open(ARGV[0])
   security_audit = NipperParser::SecurityAudit.new(config)
+  pp security_audit.introduction.class
   pp security_audit.introduction.index
   pp security_audit.introduction.title
   pp security_audit.introduction.rating
@@ -285,7 +297,7 @@ if __FILE__ == $0
   pp security_audit.introduction.ref
   pp security_audit.introduction.devices
   finding = security_audit.findings[0]
-  pp finding
+  pp finding.class
   pp finding.index
   pp finding.title
   pp finding.rating
@@ -295,16 +307,17 @@ if __FILE__ == $0
   pp finding.impact
   pp finding.recommendation
   pp security_audit.introduction
-  pp security_audit.conclusions
+  pp security_audit.conclusions.class
   pp security_audit.conclusions.per_device
   pp security_audit.conclusions.list_critical
+  pp security_audit.recommendations.class
   pp security_audit.recommendations.list
-  pp security_audit.mitigation_classification
+  pp security_audit.mitigation_classification.class
   pp security_audit.mitigation_classification.list_by.fixing[:involved]
   pp security_audit.mitigation_classification.list_by.fixing[:involved][0].rating[:rating]
   pp security_audit.mitigation_classification.list_by.rating[:high]
   pp security_audit.mitigation_classification.list_by.rating[:high][0].rating[:fix]
+  pp security_audit.mitigation_classification.statistics.class
   pp security_audit.mitigation_classification.statistics.findings
-  pp security_audit.mitigation_classification.statistics
   pp security_audit.mitigation_classification.statistics.report
 end
