@@ -35,6 +35,7 @@ gem install nipper_parser
 
 ##### Report information
 ```ruby
+require 'nipper_parser'
 nipper_parser = NipperParser::Config.open('network-devices.xml') 
 puts nipper_parser.information.title
 puts nipper_parser.information.author
@@ -79,6 +80,7 @@ pp security_audit.mitigation_classification.statistics.class
 pp security_audit.mitigation_classification.statistics.findings
 pp security_audit.mitigation_classification.statistics.report
 ```
+Fore more comprehensive usage, please refer to [Parsers ReadMe](lib/nipper_parser/parsers/README.md)
 
 Download a dummy XML report to test the library from [**here**](https://gist.github.com/KINGSABRI/3dfcb821ea29f918f74c8e1979c5a71f).
 
