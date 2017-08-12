@@ -1,5 +1,5 @@
 require 'date'
-require_relative 'parser_utils'
+
 module NipperParser
 
   # SecurityAudit parses the 'Security Audit' part including all it's sections.
