@@ -1,11 +1,12 @@
-# lib = File.expand_path('..', __FILE__)
-# $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
+lib = File.expand_path('..', __FILE__)
+$LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 
 require 'nokogiri'
 require 'nipper_parser/version'
 require 'nipper_parser/parsers/parser_utils'
 require 'nipper_parser/parsers/information'
 require 'nipper_parser/parsers/security_audit'
+require 'nipper_parser/parsers/vulnerability_audit'
 
 module NipperParser
 
@@ -36,12 +37,23 @@ module NipperParser
       alias_method :open, :new
     end
 
-    attr_reader :information, :security_audit
+    # @!attribute #information for report general information section, it calls [Information] class
+    attr_reader :information
+    # @!attribute #security_audit for security audit section, it calls [SecurityAudit] class
+    attr_reader :security_audit
+    # @!attribute #vulnerability_audit for report general information, it calls [VulnerabilityAudit] class
+    attr_reader :vulnerability_audit
+    # @!attribute #stig_compliance for report general information, it calls [STIGCompliance] class
+    # attr_reader :stig_compliance
+
+
     def initialize(file)
       config_parsed = Nokogiri::XML(File.open(file))
+
       # instantiate all parsers
-      @information    = Information.new(config_parsed)
-      @security_audit = SecurityAudit.new(config_parsed)
+      @information          = Information.new(config_parsed)
+      @security_audit       = SecurityAudit.new(config_parsed)
+      @vulnerability_audit  = VulnerabilityAudit.new(config_parsed)
     end
   end
 
@@ -55,7 +67,7 @@ if __FILE__ == $0
   pp nipper_parser.information.title
   pp nipper_parser.information.author
   pp nipper_parser.information.date
-  pp nipper_parser.security_audit
+  pp nipper_parser.security_audit.introduction.security_issue_overview
   pp nipper_parser.security_audit.findings
   pp nipper_parser.security_audit.findings[0].class
   pp nipper_parser.security_audit.findings[0].title
@@ -64,4 +76,17 @@ if __FILE__ == $0
   pp nipper_parser.security_audit.conclusions.per_device
   pp nipper_parser.security_audit.recommendations.list
   pp nipper_parser.security_audit.mitigation_classification
+  pp nipper_parser.vulnerability_audit.class
+  pp nipper_parser.vulnerability_audit.introduction
+  pp nipper_parser.vulnerability_audit.introduction.excluded_devices
+  cve = nipper_parser.vulnerability_audit.cves[0]
+  pp cve.title
+  pp cve.rating
+  pp cve.summary
+  pp cve.affected_devices
+  pp cve.vendor_sec_advisories
+  pp cve.references
+  pp nipper_parser.vulnerability_audit.conclusions
+  pp nipper_parser.vulnerability_audit.conclusions.list_critical
+  pp nipper_parser.vulnerability_audit.recommendations
 end
