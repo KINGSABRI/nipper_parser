@@ -1,9 +1,8 @@
 # NipperParser
-[![travis-cli](https://api.travis-ci.org/KINGSABRI/nipper_parser.svg)](https://travis-ci.org/KINGSABRI/nipper_parser/) 
+[![Gem Version](https://badge.fury.io/rb/nipper_parser.svg)](https://badge.fury.io/rb/nipper_parser)
 [![Code Climate](https://codeclimate.com/github/KINGSABRI/nipper_parser/badges/gpa.svg)](https://codeclimate.com/github/KINGSABRI/nipper_parser) 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/8c81748967664cc5bb92147581fb6802)](https://www.codacy.com/app/king-sabri/attack-domain?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=KINGSABRI/nipper_parser&amp;utm_campaign=Badge_Grade)  
 [![inch-ci](https://inch-ci.org/github/KINGSABRI/nipper_parser.svg?branch=master)](https://inch-ci.org/github/KINGSABRI/nipper_parser)
-[![Gem Version](https://badge.fury.io/rb/nipper_parser.svg)](https://badge.fury.io/rb/nipper_parser)
 
 NipperParser gem is an unofficial parser for [Titania Nipper Studio](https://www.titania.com/products/nipper-studio) XML report.
 
