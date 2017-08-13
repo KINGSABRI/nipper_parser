@@ -1,3 +1,6 @@
+require 'date'
+
+
 module NipperParser
 
   # ParserUtils is a helper module for parsers' quick and dirty operations.
@@ -26,13 +29,16 @@ module NipperParser
     end
 
     Attribute = Struct.new(:index, :title, :ref)
-    # @param attr [Nokogiri::XML::Element] attributes
-    # @return [Hash<Attribute>]
+    # @param attr [Nokogiri::XML::Element]
+    # @return [ParserUtils::Attribute]
     def attributes(attr)
+      require 'pp'
+      # pp caller_locations
+
       Attribute.new(
-          attr.attributes['index'].text,
+          attr.attributes['index'].text.to_f,
           attr.attributes['title'].text,
-          attr.attributes['ref'].text
+          attr.attributes['ref'].text,
       )
     end
 
