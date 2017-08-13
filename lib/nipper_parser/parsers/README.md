@@ -85,10 +85,10 @@ A report detailing publically known software vulnerabilities in the device firmw
 manufacturer and third-party references.
 
 **Vulnerability Audit Section Contains:**
-- Introduction                  [not yet implemented - PR is welcome]
-- CVEs list                     [not yet implemented - PR is welcome]
-- Conclusions                   [not yet implemented - PR is welcome]
-- Recommendations               [not yet implemented - PR is welcome]
+- Introduction                  [implemented]
+- CVEs list                     [implemented]
+- Conclusions                   [implemented]
+- Recommendations               [implemented]
 
 #### Usage
 
