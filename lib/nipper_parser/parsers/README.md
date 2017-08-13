@@ -41,14 +41,14 @@ experience.
 #### Usage
 
 ```ruby
+pp security_audit = nipper_parser.security_audit
+
 # - Introduction
 pp security_audit.introduction.class
 pp security_audit.introduction.title
 pp security_audit.introduction.date
 pp security_audit.introduction.security_issue_overview
-
 # - Findings
-pp security_audit = nipper_parser.security_audit
 pp security_audit.findings
 finding = security_audit.findings[0]              # Play wit a finding
 pp finding.class
@@ -93,10 +93,25 @@ manufacturer and third-party references.
 #### Usage
 
 ```ruby
+vulnerability_audit = nipper_parser.vulnerability_audit
+
 # - Introduction
+pp vulnerability_audit.class
+pp vulnerability_audit.introduction
+pp vulnerability_audit.introduction.excluded_devices
 # - CVEs
+cve = vulnerability_audit.cves[0]
+pp cve.title
+pp cve.rating
+pp cve.summary
+pp cve.affected_devices
+pp cve.vendor_sec_advisories
+pp cve.references
 # - Conclusions
+pp vulnerability_audit.conclusions.class
+pp vulnerability_audit.conclusions.list_critical
 # - Recommendations
+pp vulnerability_audit.recommendations.list
 ```
 
 ### CIS Benchmarks
