@@ -1,4 +1,5 @@
 require 'date'
+require_relative 'parser_utils'
 
 module NipperParser
 
@@ -107,9 +108,10 @@ module NipperParser
     # Introduction of the Security Audit report
     def introduction
       intro = @config[0]
-      index     = attributes(intro).index
-      title     = attributes(intro).title
-      reference = attributes(intro).ref.to_i
+      attribute = attributes(intro)
+      index     = attribute.index
+      title     = attribute.title
+      reference = attribute.ref
       date      = Date.parse(intro.elements[0].text).to_s
       devices   = generate_table(intro.elements[1].elements)
       security_issue_overview = {}
@@ -286,7 +288,6 @@ end
 if __FILE__ == $0
   require 'nokogiri'
   require 'pp'
-  require_relative 'parser_utils'
   config = Nokogiri::XML open(ARGV[0])
   security_audit = NipperParser::SecurityAudit.new(config)
   pp security_audit.introduction.class
