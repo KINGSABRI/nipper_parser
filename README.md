@@ -11,9 +11,9 @@ NipperParser gem is an unofficial parser for [Titania Nipper Studio](https://www
 
 | Modules / Sections     | Supported |
 |------------------------|-----------|
-| Information            |     x     |
-| Security Audit         |     x     |
-| Vulnerability Audit    |     x     |
+| Information            |     ✓     |
+| Security Audit         |     ✓     |
+| Vulnerability Audit    |     ✓     |
 | CIS Benchmarks         |           |
 | STIG Compliance        |           |
 | SANS Policy Compliance |           |
