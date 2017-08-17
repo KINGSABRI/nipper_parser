@@ -97,6 +97,7 @@ module NipperParser
     )
 
     attr_reader :config, :title
+
     # @param config [Nokogiri::XML::Document]
     def initialize(config)
       @config = config.xpath("//report/part[@ref='SECURITYAUDIT']")[0].elements
