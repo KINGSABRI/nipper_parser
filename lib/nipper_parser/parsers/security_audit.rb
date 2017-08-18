@@ -100,8 +100,10 @@ module NipperParser
 
     # @param config [Nokogiri::XML::Document]
     def initialize(config)
-      @config = config.xpath("//report/part[@ref='SECURITYAUDIT']")[0].elements
-      @title  = @config[0].elements[1].attributes['title'].text
+      part    = config.xpath("//report/part[@ref='SECURITYAUDIT']")
+      @config = part[0].elements
+      @title  = part[0].attributes['title'].text
+
       introduction
       findings
     end
