@@ -5,10 +5,10 @@ Each parser is divided in a separate class and file.
 ### General Report Information
 
 **General Report Information Contains:**
-- Introduction                  [implemented]
-- Report Conventions            [not yet implemented - PR is welcome]
-- Network Filtering Actions     [not yet implemented - PR is welcome]
-- Object Filter Types           [not yet implemented - PR is welcome]
+- Introduction..................[implemented]
+- Report Conventions............[not yet implemented - PR is welcome]
+- Network Filtering Actions.....[not yet implemented - PR is welcome]
+- Object Filter Types...........[not yet implemented - PR is welcome]
 
 #### Usage
 
@@ -32,11 +32,11 @@ Perform a "best practice" security audit that combines checks from many differen
 experience. 
 
 **Security Audit Section Contains:**
-- Introduction                  [implemented]
-- Findings                      [implemented]
-- Conclusions                   [implemented]
-- Recommendations               [implemented]
-- Mitigation Classification     [implemented]
+- Introduction..................[implemented]
+- Findings......................[implemented]
+- Conclusions...................[implemented]
+- Recommendations...............[implemented]
+- Mitigation Classification.....[implemented]
 
 #### Usage
 
@@ -85,10 +85,10 @@ A report detailing publically known software vulnerabilities in the device firmw
 manufacturer and third-party references.
 
 **Vulnerability Audit Section Contains:**
-- Introduction                  [implemented]
-- CVEs list                     [implemented]
-- Conclusions                   [implemented]
-- Recommendations               [implemented]
+- Introduction..................[implemented]
+- CVEs list.....................[implemented]
+- Conclusions...................[implemented]
+- Recommendations...............[implemented]
 
 #### Usage
 
@@ -119,8 +119,8 @@ A CIS Benchmarks audit using select profile. Note, support is currently limited 
 report that are not supported will be ignored.
 
 **CIS Benchmarks Section Contains:**
-- Introduction                  [not yet implemented - PR is welcome]
-- Conclusions                   [not yet implemented - PR is welcome]
+- Introduction..................[not yet implemented - PR is welcome]
+- Conclusions...................[not yet implemented - PR is welcome]
 
 #### Usage
 
@@ -133,10 +133,10 @@ report that are not supported will be ignored.
 A DISA STIG compliance audit against specific STIG checklist.
 
 **STIG Compliance Section Contains:**
-- Introduction                  [not yet implemented - PR is welcome]
-- Compliance Observations list  [not yet implemented - PR is welcome]
-- Conclusions                   [not yet implemented - PR is welcome]
-- Recommendations               [not yet implemented - PR is welcome]
+- Introduction..................[not yet implemented - PR is welcome]
+- Compliance Observations list..[not yet implemented - PR is welcome]
+- Conclusions...................[not yet implemented - PR is welcome]
+- Recommendations...............[not yet implemented - PR is welcome]
 
 #### Usage
 
@@ -151,8 +151,8 @@ A DISA STIG compliance audit against specific STIG checklist.
 A SANS policy compliance audit against specific SANS policy document.
 
 **SANS Policy Compliance Section Contains:**
-- Introduction                  [not yet implemented - PR is welcome]
-- Compliance Observations list  [not yet implemented - PR is welcome]
+- Introduction..................[not yet implemented - PR is welcome]
+- Compliance Observations list..[not yet implemented - PR is welcome]
 
 #### Usage
 
@@ -167,8 +167,8 @@ A SANS policy compliance audit against specific SANS policy document.
 An audit of Requirement and Security Assessment Procedures against PCI DSS 3.2.
 
 **PCI Audit Section Contains:**
-- Introduction                  [not yet implemented - PR is welcome]
-- Compliance Requirements list  [not yet implemented - PR is welcome]
+- Introduction..................[not yet implemented - PR is welcome]
+- Compliance Requirements list..[not yet implemented - PR is welcome]
 
 #### Usage
 
@@ -182,8 +182,8 @@ A report examining the network filtering rules and objects, highlighting unused 
 group recursion and more.
 
 **Filtering Complexity Section Contains:**
-- Introduction                  [not yet implemented - PR is welcome]
-- Observations                  [not yet implemented - PR is welcome]
+- Introduction..................[implemented]
+- Observations..................[implemented]
 
 #### Usage
 
@@ -213,8 +213,8 @@ pp observation.affected_devices[0].details_tables[0].tables
 A detailed report on how the device has been configured.
 
 **Configuration Report Section Contains:**
-- Introduction                  [not yet implemented - PR is welcome]
-- Devices Config Audit          [not yet implemented - PR is welcome]
+- Introduction..................[not yet implemented - PR is welcome]
+- Devices Config Audit..........[not yet implemented - PR is welcome]
 
 #### Usage
 
@@ -227,8 +227,8 @@ A detailed report on how the device has been configured.
 The raw configuration reporting details the actual device configuration data(excluding directory-based configurations).
 
 **Raw Configuration  Section Contains:**
-- Introduction                  [not yet implemented - PR is welcome]
-- Devices configuration raw     [not yet implemented - PR is welcome]
+- Introduction..................[not yet implemented - PR is welcome]
+- Devices configuration raw.....[not yet implemented - PR is welcome]
 
 #### Usage
 
@@ -241,7 +241,7 @@ The raw configuration reporting details the actual device configuration data(exc
 The raw change tracking reporting will detail all the configuration lies that have changes since the previous report.
 
 **Raw Change Tracking Section Contains:**
-- Introduction                  [not yet implemented - PR is welcome]
+- Introduction..................[not yet implemented - PR is welcome]
 
 #### Usage
 
@@ -253,13 +253,13 @@ The raw change tracking reporting will detail all the configuration lies that ha
 Appendix report section which can include a list of abbreviations, references and other information related to the report contents.
 
 **Appendix Section Contains:**
-- Introduction                  [not yet implemented - PR is welcome]
-- Logging Severity Levels       [not yet implemented - PR is welcome]
-- Common Time Zones             [not yet implemented - PR is welcome]
-- IP Protocols                  [not yet implemented - PR is welcome]
-- ICMP Types                    [not yet implemented - PR is welcome]
-- Abbreviations                 [not yet implemented - PR is welcome]
-- Nipper Studio Version         [not yet implemented - PR is welcome]
+- Introduction..................[not yet implemented - PR is welcome]
+- Logging Severity Levels.......[not yet implemented - PR is welcome]
+- Common Time Zones.............[not yet implemented - PR is welcome]
+- IP Protocols..................[not yet implemented - PR is welcome]
+- ICMP Types....................[not yet implemented - PR is welcome]
+- Abbreviations.................[not yet implemented - PR is welcome]
+- Nipper Studio Version.........[not yet implemented - PR is welcome]
  
 
 #### Usage
