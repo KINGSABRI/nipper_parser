@@ -138,7 +138,7 @@ module NipperParser
 
       @findings = findings.map do |finding|
         Finding.new(
-            attributes(finding).index.to_f,
+            attributes(finding).index,
             attributes(finding).title,
             attributes(finding).ref,
             finding.elements[0].elements[0].elements.map(&:attributes),            # affected_devices
@@ -154,7 +154,7 @@ module NipperParser
     # Conclusions
     def conclusions
       conc = @config.search("section[@ref='SECURITY.CONCLUSIONS']")[0]
-      index     = attributes(conc).index.to_f
+      index     = attributes(conc).index
       title     = attributes(conc).title
       reference = attributes(conc).ref
       per_device = generate_table(conc.elements[1].elements)
@@ -176,7 +176,7 @@ module NipperParser
     # Recommendations
     def recommendations
       recom = @config.search("section[@ref='SECURITY.RECOMMENDATIONS']")[0]
-      index     = attributes(recom).index.to_f
+      index     = attributes(recom).index
       title     = attributes(recom).title
       reference = attributes(recom).ref
       list      = generate_table(recom.elements[1].elements)
