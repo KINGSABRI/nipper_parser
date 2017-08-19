@@ -18,7 +18,7 @@ NipperParser gem is an unofficial parser for [Titania Nipper Studio](https://www
 | STIG Compliance        |           |
 | SANS Policy Compliance |           |
 | PCI Audit              |           |
-| Filtering Complexity   |           |
+| Filtering Complexity   |     ✓     |
 | Configuration Report   |           |
 | Raw Configuration      |           |
 | Raw Change Tracking    |           |
