@@ -75,10 +75,10 @@ if __FILE__ == $0
   pp finding.class
   pp finding.title
   pp finding.impact
-  pp finding.conclusions
-  pp finding.conclusions.per_device
-  pp finding.recommendations.list
-  pp finding.mitigation_classification
+  pp nipper_parser.security_audit.conclusions
+  pp nipper_parser.security_audit.conclusions.per_device
+  pp nipper_parser.security_audit.recommendations.list
+  pp nipper_parser.security_audit.mitigation_classification
   pp nipper_parser.vulnerability_audit.class
   pp nipper_parser.vulnerability_audit.title
   pp nipper_parser.vulnerability_audit.introduction
