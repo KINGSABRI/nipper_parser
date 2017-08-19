@@ -189,7 +189,24 @@ group recursion and more.
 
 ```ruby
 # - Introduction
+filtering = nipper_parser.filtering_complexity
+pp filtering.title
+pp filtering.introduction
+pp filtering.introduction.devices
+
 # - Observations
+observations = filtering.observations
+puts  "Number of observations: #{observations.size}"
+observation = observations[0]
+pp observation.title
+pp observation.index
+pp observation.ref
+pp observation.overview
+pp observation.affected_devices
+pp observation.affected_devices[0].title
+pp observation.affected_devices[0].details
+pp observation.affected_devices[0].details_tables[0].title
+pp observation.affected_devices[0].details_tables[0].tables
 ```
 
 ### Configuration Report
