@@ -39,9 +39,10 @@ module NipperParser
     # @param config [Nokogiri::XML::Document]
     def initialize(config)
       part    = config.xpath("//report/part[@ref='COMPLEXITY']")
-      @config = part[0].elements
-      @title  = part[0].attributes['title'].text
-
+      unless part.empty?
+        @config = part[0].elements
+        @title  = part[0].attributes['title'].text
+      end            
     end
 
     # Introduction of the Security Audit report

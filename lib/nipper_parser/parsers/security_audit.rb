@@ -141,12 +141,12 @@ module NipperParser
             attributes(finding).index,
             attributes(finding).title,
             attributes(finding).ref,
-            finding.elements[0].elements[0].elements.map(&:attributes),            # affected_devices
-            rating_table(finding.elements[0].elements[1].elements),        # Rating table
-            finding.elements[2].elements.first(2).map(&:text).join("\n"),         # finding
-            finding.elements[3].elements.text,                                     # impact
-            finding.elements[4].elements.text,                                     # ease
-            finding.elements[5].elements.text                                      # recommendation
+            finding.elements[0]&.elements[0].elements.map(&:attributes),            # affected_devices
+            rating_table(finding.elements[0].elements[1].elements),                 # Rating table
+            finding.elements[2]&.elements&.first(2).map(&:text).join("\n"),         # finding
+            finding.elements[3]&.elements&.text,                                    # impact
+            finding.elements[4]&.elements&.text,                                    # ease
+            finding.elements[5]&.elements&.text                                     # recommendation
         )
       end
     end
